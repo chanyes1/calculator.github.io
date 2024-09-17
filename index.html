@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #affcff;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .calculator {
+            background-color: rgb(69, 152, 215);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        img {
+            transition: transform 0.3s ease-in-out;
+            margin-right: 40px;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            width: 100px;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #874caf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .result {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Akinator image on the left -->
+        <img src="aki.png" alt="Akinator" id="akinator-image" class="default-img" style="width: 173px; height: 300px;">
+
+        <!-- Grade calculator form -->
+        <div class="calculator">
+            <h1>Student Grade Calculator</h1>
+
+            <label for="prelim">Prelim Grade: </label>
+            <input type="number" id="prelim" placeholder="Enter Prelim Grade" step="0.01" min="0" max="100"><br><br>
+
+            <label for="midterm">Midterm Grade: </label>
+            <input type="number" id="midterm" placeholder="Enter Midterm Grade" step="0.01" min="0" max="100"><br><br>
+
+            <label for="final">Final Grade: </label>
+            <input type="number" id="final" placeholder="Enter Final Grade" step="0.01" min="0" max="100"><br><br>
+
+            <button onclick="calculateGrade()">Calculate</button><br>
+
+            <!-- New "Can it Pass?" Button -->
+            <button onclick="canItPass()">Can it Pass?</button>
+
+            <div class="result" id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateGrade() {
+            var prelim = parseFloat(document.getElementById('prelim').value);
+            var midterm = parseFloat(document.getElementById('midterm').value);
+            var finalExam = parseFloat(document.getElementById('final').value);
+
+            // Check if the grades are within the valid range (0-100)
+            if (prelim > 100 || midterm > 100 || finalExam > 100 || prelim < 0 || midterm < 0 || finalExam < 0) {
+                document.getElementById('result').innerHTML = "Grades must be between 0 and 100.";
+                return;
+            }
+
+            var totalGrade = (prelim * 0.2) + (midterm * 0.3) + (finalExam * 0.5);
+            var resultText;
+
+            // Get the image element
+            var akinatorImage = document.getElementById('akinator-image');
+
+            // Programmatically set the width and height based on your logic
+            var newWidth = 300;  // Adjust this value as needed
+            var newHeight = 300; // Adjust this value as needed
+
+            akinatorImage.style.width = newWidth + 'px';
+            akinatorImage.style.height = newHeight + 'px';
+
+            // Change image and result text based on grade
+
+            if (totalGrade >= 90) {
+                resultText = `Final Grade: ${totalGrade.toFixed(2)} - You Passed And Are On The Dean's Lister!!`;
+                akinatorImage.src = "akiyay.png";  // Image for passing
+            } else if (totalGrade >= 75) {
+                resultText = `Final Grade: ${totalGrade.toFixed(2)} - You Passed!`;
+                akinatorImage.src = "akiyay.png";  // Image for passing
+            } else {
+                resultText = `Final Grade: ${totalGrade.toFixed(2)} - You Failed.`;
+                akinatorImage.src = "akinah.png";  // Image for failing
+            }
+
+            document.getElementById('result').innerHTML = resultText;
+        }
+
+        // Function to calculate if it's possible to pass
+        function canItPass() {
+            var prelim = parseFloat(document.getElementById('prelim').value);
+            var midterm = parseFloat(document.getElementById('midterm').value);
+
+            if (isNaN(prelim) || prelim < 0 || prelim > 100) {
+                document.getElementById('result').innerHTML = "Please enter a valid prelim grade.";
+                return;
+            }
+
+            if (isNaN(midterm)) {
+                var maxMidterm = 100;
+                var requiredFinalGrade = (75 - (prelim * 0.2) - (maxMidterm * 0.3)) / 0.5;
+
+                if (requiredFinalGrade <= 100 && requiredFinalGrade >= 0) {
+                    document.getElementById('result').innerHTML = `With a prelim score of ${prelim}, you would need a perfect midterm (100) and a final exam score of at least ${requiredFinalGrade.toFixed(2)} to pass.`;
+                } else {
+                    document.getElementById('result').innerHTML = "Not possible to pass at all.";
+                }
+            } else {
+                if (midterm < 0 || midterm > 100) {
+                    document.getElementById('result').innerHTML = "Please enter a valid midterm grade.";
+                    return;
+                }
+
+                var requiredFinalGrade = (75 - (prelim * 0.2) - (midterm * 0.3)) / 0.5;
+
+                if (requiredFinalGrade <= 100 && requiredFinalGrade >= 0) {
+                    document.getElementById('result').innerHTML = `To pass, you need at least a final exam grade of: ${requiredFinalGrade.toFixed(2)}.`;
+                } else {
+                    document.getElementById('result').innerHTML = "Not possible to pass at all.";
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
